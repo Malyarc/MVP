@@ -1,6 +1,6 @@
 import React from 'react';
 
-class Registration extends React.Component {
+class SignUp extends React.Component {
     constructor(props) {
         super(props);
     }
@@ -9,21 +9,31 @@ class Registration extends React.Component {
         return(
 
         <div>
+          Sign Up
           <form onSubmit={(event) => this.props.sendRegistration(event)}>
-            <label>
-              Name:
-              <input type="text" name="name" />
+          <label>
+              First Name: &nbsp;
+              <input type="text" name="firstname" />
             </label>
+            <br></br>
+            <label>
+              Last Name: &nbsp;
+              <input type="text" name="lastname" />
+            </label>
+            <br></br>
 
             <label>
-              Email:
+              Email: &nbsp;
               <input type="text" name="email" />
             </label>
+            <br></br>
 
             <label>
-              Password:
+              Password: &nbsp;
               <input type="text" name="password" />
             </label>
+            <br></br>
+
             <input type="submit" value="Submit"/>
           </form>
         </div>
@@ -34,4 +44,4 @@ class Registration extends React.Component {
 
 };
 
-export default Registration;
+export default SignUp;
