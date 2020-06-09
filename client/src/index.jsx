@@ -5,15 +5,19 @@ import SignUp from './components/SignUp.jsx';
 import Welcome from './components/Welcome.jsx';
 import Login from './components/Login.jsx';
 import UploadVideo from './components/UploadVideo.jsx';
-
-
+// import '../../node_modules/bootstrap/dist/css/bootstrap.min.css'
+// import { MDBContainer, MDBRow, MDBCol, MDBBtn } from 'mdbreact';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import '../../node_modules/bootstrap/dist/css/bootstrap.min.css';
 
 class App extends React.Component {
     constructor(props) {
       super(props);
       this.state = {
         user: null,
-        isLoggedIn: false
+        isLoggedIn: false,
+        links: [],
+        alreadyUser: false
       }
       this.addFileToUser = this.addFileToUser.bind(this)
      // this.findUserFiles = this.findUserFiles.bind(this)
@@ -42,7 +46,8 @@ class App extends React.Component {
       }).done((data) => {
         this.setState({
           user: data,
-          isLoggedIn: true
+          isLoggedIn: true,
+          links: data.files
         })
         //console.log(this.state.user.files)
 
@@ -51,24 +56,6 @@ class App extends React.Component {
         console.log(err);
       });
     }
-
-
-
-    // findUserFiles() {
-    //   console.log('client email',this.state.user.email)
-    //   var info = {"email": this.state.user.email}
-    //   $.ajax({
-    //     type: 'GET',
-    //     url: '/getFiles',
-    //     data: info
-    //   }).done((data) => {
-    //     this.setState({
-    //       filesList : data
-    //     })
-    //     //console.log(this.state.filesList)
-    //   })
-    // }
-
 
 
     sendRegistration(event) {
@@ -90,7 +77,7 @@ class App extends React.Component {
         console.log('then');
         this.setState({
           user: newUser,
-          isLoggedIn: true
+          isLoggedIn: true,
         })
 
       }).catch((err) => {
@@ -132,18 +119,43 @@ class App extends React.Component {
         }
         //console.log('data', data.imageUrl);
         this.addFileToUser(stuff)
+        if (!this.state.user.files) {
+          this.state.user.files = []
+        }
+        var storage = this.state.user.files;
+        storage.push(data.imageUrl)
+        this.setState({
+          links: storage
+        })
+
         })
     }
 
-    render () {
 
+
+    changeToLogin() {
+      this.setState({
+        alreadyUser: true
+      })
+    }
+
+    render () {
+      var intro2;
       if (this.state.isLoggedIn) {
         var intro = <Welcome user = {this.state.user} />
-        //this.findUserFiles();
-        var intro2 = <UploadVideo uploadFile={this.handleImageUpload.bind(this)} links = {this.state.user.files}/>;
+        var intro2 = <UploadVideo uploadFile={this.handleImageUpload.bind(this)} links = {this.state.links}/>;
       } else {
-         var intro = <Login login = {this.login.bind(this)}/>
-         var intro2 = <SignUp sendRegistration={this.sendRegistration.bind(this)}/>
+         //var intro2 = <Login login = {this.login.bind(this)}/>
+         if (this.state.alreadyUser) {
+           var intro = <Login login = {this.login.bind(this)}/>
+
+         } else {
+          var intro = <SignUp sendRegistration={this.sendRegistration.bind(this)} logIn={this.changeToLogin.bind(this)}/>
+
+         }
+
+        // var intro1 = <SignUp sendRegistration={this.sendRegistration.bind(this)}/>
+
       }
       return (
       <div>

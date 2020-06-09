@@ -2,28 +2,22 @@ const express = require('express');
 const userdb = require('../database/index')
 const bodyParser = require('body-parser');
 const mongoose = require("mongoose");
+const key = require('../key.js');
 
 var aws = require('aws-sdk');
 var multer = require('multer');
 var multerS3 = require('multer-s3');
-
 var s3 = new aws.S3()
-
 let app = express();
-
-
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static(__dirname + '/../client/dist'));
-
 var counter = 0;
-
 aws.config.update({
-  secretAccessKey: 'atMQcJnrDYu/g7Q0QMpm37NMcXrySxQVEW6k/8cP',
-  accessKeyId: 'AKIAICSKKNPYIEXPZLWA',
+  secretAccessKey: key.skey,
+  accessKeyId: key.key,
   region: 'us-west-1'
 });
-
 var upload = multer({
   storage: multerS3({
     s3: s3,
@@ -37,21 +31,16 @@ var upload = multer({
     }
   })
 })
-
 const singleUpload = upload.single('image');
-
 app.post('/image-upload', function(req, res) {
   //console.log(singleUpload);
   //console.log(req)
   //userdb.User.update({'email': })
-
   singleUpload(req, res, function (err) {
     //console.log(req.file)
     return res.json({'imageUrl': req.file.location});
-
   })
 })
-
 
 // app.get('/getFiles', (req,res) => {
 //   console.log('user email', req.body)
